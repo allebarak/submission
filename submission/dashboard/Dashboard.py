@@ -4,9 +4,6 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import os
 
-
-
-
 # Dynamically get the absolute path of the CSV files
 current_dir = os.path.dirname(os.path.abspath(__file__))
 hour_data_path = os.path.join(current_dir, 'hour.csv')
@@ -20,6 +17,31 @@ def load_data():
     return data_hour, data_day
 
 data_hour, data_day = load_data()
+
+def clean_data(df):
+    """
+    Fungsi untuk membersihkan dataset:
+    1. Menyesuaikan tipe data jika diperlukan
+    """
+    print(f"--- Sebelum Pembersihan ---")
+    print(f"Tipe Data Tiap Kolom:\n{df.dtypes}")
+    print("-" * 50)
+
+    # Konversi tipe data jika diperlukan (contoh: kolom tanggal)
+    if 'dteday' in df.columns:  # Jika kolom 'dteday' ada di dataset
+        df['dteday'] = pd.to_datetime(df['dteday'], errors='coerce')
+
+    print(f"--- Setelah Pembersihan ---")
+    print(f"Tipe Data Tiap Kolom Setelah Penyesuaian:\n{df.dtypes}")
+    print("-" * 50)
+
+    return df
+
+# Membersihkan Dataset Day
+data_day_cleaned = clean_data(data_day)
+
+# Membersihkan Dataset Hour
+data_hour_cleaned = clean_data(data_hour)
 
 # Streamlit app title
 st.title('Bike Sharing Dashboard')

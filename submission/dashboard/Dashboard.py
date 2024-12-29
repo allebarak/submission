@@ -3,14 +3,22 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-# Load dataset
+
+
+
+# Dynamically get the absolute path of the CSV files
+current_dir = os.path.dirname(os.path.abspath(__file__))
+hour_data_path = os.path.join(current_dir, 'hour.csv')
+day_data_path = os.path.join(current_dir, 'day.csv')
+
+# Load your dataset
 @st.cache
 def load_data():
-    day_data_path = 'day.csv'  # Update this path if necessary
-    data_day_cleaned = pd.read_csv(day_data_path)
-    return data_day_cleaned
+    data_hour = pd.read_csv(hour_data_path)
+    data_day = pd.read_csv(day_data_path)
+    return data_hour, data_day
 
-data_day_cleaned = load_data()
+data_hour, data_day = load_data()
 
 # Streamlit app title
 st.title('Bike Sharing Dashboard')

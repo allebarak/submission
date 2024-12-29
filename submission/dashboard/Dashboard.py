@@ -49,6 +49,16 @@ st.title('Bike Sharing Dashboard')
 st.sidebar.title('Navigation')
 options = st.sidebar.radio('Select an option:', ['Monthly Analysis', 'Weather Analysis'])
 
+# Function for filtering data by date range
+def filter_by_date(data):
+    if 'dteday' in data.columns:
+        start_date = st.sidebar.date_input('Start Date', data['dteday'].min().date())
+        end_date = st.sidebar.date_input('End Date', data['dteday'].max().date())
+
+        filtered_data = data[(data['dteday'] >= pd.to_datetime(start_date)) & (data['dteday'] <= pd.to_datetime(end_date))]
+        return filtered_data
+    return data
+
 # Function for Monthly Analysis
 def visualisasi_bulanan(data):
     monthly_usage = data.groupby('mnth')['cnt'].mean().reset_index()
@@ -82,9 +92,11 @@ def visualisasi_cuaca(data):
 # Monthly Analysis Section
 if options == 'Monthly Analysis':
     st.header('Monthly Analysis')
-    visualisasi_bulanan(data_day_cleaned)
+    filtered_data = filter_by_date(data_day_cleaned)
+    visualisasi_bulanan(filtered_data)
 
 # Weather Analysis Section
 elif options == 'Weather Analysis':
     st.header('Weather Analysis')
-    visualisasi_cuaca(data_day_cleaned)
+    filtered_data = filter_by_date(data_day_cleaned)
+    visualisasi_cuaca(filtered_data)

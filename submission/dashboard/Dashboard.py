@@ -47,7 +47,7 @@ data_hour_cleaned = clean_data(data_hour)
 st.title('Bike Sharing Dashboard')
 
 st.sidebar.title('Navigation')
-options = st.sidebar.radio('Select an option:', ['Monthly Analysis', 'Weather Analysis'])
+options = st.sidebar.radio('Select an option:', ['Monthly Analysis', 'Weather Analysis', 'Seasonal Analysis'])
 
 # Function for filtering data by date range
 def filter_by_date(data):
@@ -89,6 +89,21 @@ def visualisasi_cuaca(data):
     plt.grid(axis='y', linestyle='--', alpha=0.7)
     st.pyplot(plt)
 
+# Function for Seasonal Analysis
+def visualisasi_musiman(data):
+    seasonal_usage = data.groupby('season')['cnt'].mean().reset_index()
+    season_names = {1: 'Musim Semi', 2: 'Musim Panas', 3: 'Musim Gugur', 4: 'Musim Dingin'}
+    seasonal_usage['season'] = seasonal_usage['season'].map(season_names)
+
+    plt.figure(figsize=(10, 6))
+    sns.barplot(x='season', y='cnt', data=seasonal_usage, palette='coolwarm')
+    plt.title('Rata-Rata Penggunaan Sepeda per Musim', fontsize=16)
+    plt.xlabel('Musim', fontsize=14)
+    plt.ylabel('Rata-Rata Pengguna', fontsize=14)
+    plt.xticks(rotation=15)
+    plt.grid(axis='y', linestyle='--', alpha=0.7)
+    st.pyplot(plt)
+
 # Monthly Analysis Section
 if options == 'Monthly Analysis':
     st.header('Monthly Analysis')
@@ -100,3 +115,9 @@ elif options == 'Weather Analysis':
     st.header('Weather Analysis')
     filtered_data = filter_by_date(data_day_cleaned)
     visualisasi_cuaca(filtered_data)
+
+# Seasonal Analysis Section
+elif options == 'Seasonal Analysis':
+    st.header('Seasonal Analysis')
+    filtered_data = filter_by_date(data_day_cleaned)
+    visualisasi_musiman(filtered_data)
